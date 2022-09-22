@@ -1,0 +1,14 @@
+---
+- name: del users on linux servers
+  hosts: linux
+  become: yes
+
+  tasks:
+  - name: del the user 
+    user: name=user1 state=absent remove=yes
+
+  - name: del the user
+    user: name=user2 state=absent remove=yes
+
+  - name: del the user
+    user: name=3 state=absent remove=yes
