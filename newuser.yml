@@ -7,138 +7,131 @@
 
   - block: #for RedHat
 
-     - name: add the user
-       user:
-         name: user1
+     - name: add several users
+       ansible.builtin.user:
+         name: "{{ item.name }}"
          shell: /bin/bash
          groups: wheel
-         password: $6$AAAAA
+         password: "{{ item.password }}"
+       loop:
+         - { name: 'user1', password: '$6$AAAAA' }
+         - { name: 'user2', password: '$6$AAAAA' }
 
-     - name: add the user
-       user:
-         name: user2
-         shell: /bin/bash
-         groups: wheel
-         password: $6$AAAAA
+     - block:
 
-     - name: add the user
-       user:
-         name: user3
-         shell: /bin/bash
-         groups: wheel
-         password: $6$AAAAA
+       - name: add several users
+         ansible.builtin.user:
+           name: "{{ item.name }}"
+           shell: /bin/bash
+           groups: wheel
+           password: "{{ item.password }}"
+         loop:
+           - { name: 'user3', password: '$6$AAAAA' }
+           - { name: 'user4', password: '$6$AAAAA' }
+           
        when: token1 == "yes"
 
-     - name: add the user
-       user:
-         name: user4
-         shell: /bin/bash
-         groups: wheel
-         password: $6$AAAAA
-       when: token1 == "yes"
-
-     - name: add the user
-       user:
-         name: user5
-         shell: /bin/bash
-         groups: wheel
-         password: $6$AAAAA
+     - block:
+     
+       - name: add several users
+         ansible.builtin.user:
+           name: "{{ item.name }}"
+           shell: /bin/bash
+           groups: wheel
+           password: "{{ item.password }}"
+         loop:
+           - { name: 'user5', password: '$6$AAAAA' }
+           
        when: token1 == "yes" and token2 == "yes"
 
-    when: ansible_os_family == "RedHat"
+     when: ansible_os_family == "RedHat"
 
   - block: #for Debian
 
-     - name: add the user
-       user:
-         name: user1
+     - name: add several users
+       ansible.builtin.user:
+         name: "{{ item.name }}"
          shell: /bin/bash
          groups: sudo
-         password: $6$AAAAA
+         password: "{{ item.password }}"
+       loop:
+         - { name: 'user1', password: '$6$AAAAA' }
+         - { name: 'user2', password: '$6$AAAAA' }
 
-     - name: add the user 
-       user:
-         name: user2
-         shell: /bin/bash
-         groups: sudo	
-         password: $6$AAAAA
+     - block:
 
-     - name: add the user
-       user:
-         name: user3
-         shell: /bin/bash
-         groups: sudo
-         password: $6$AAAAA
+       - name: add several users
+         ansible.builtin.user:
+           name: "{{ item.name }}"
+           shell: /bin/bash
+           groups: sudo
+           password: "{{ item.password }}"
+         loop:
+           - { name: 'user3', password: '$6$AAAAA' }
+           - { name: 'user4', password: '$6$AAAAA' }
+           
        when: token1 == "yes"
 
-     - name: add the user
-       user:
-         name: izhboldin_ad
-         shell: /bin/bash
-         groups: sudo
-         password: $6$AAAAA
-       when: token1 == "yes"
-
-     - name: add the user
-       user:
-         name: user5
-         shell: /bin/bash
-         groups: sudo
-         password: $6$AAAAA
+     - block:
+     
+       - name: add several users
+         ansible.builtin.user:
+           name: "{{ item.name }}"
+           shell: /bin/bash
+           groups: sudo
+           password: "{{ item.password }}"
+         loop:
+           - { name: 'user5', password: '$6$AAAAA' }
+           
        when: token1 == "yes" and token2 == "yes"
 
-    when: ansible_os_family == "Debian"
+     when: ansible_os_family == "Debian"
 
   - block: #for Astra
 
-     - name: add the user
-       user:
-         name: user1
+     - name: add several users
+       ansible.builtin.user:
+         name: "{{ item.name }}"
          shell: /bin/bash
          groups: astra-admin,astra-console
-         password: $6$AAAAA
+         password: "{{ item.password }}"
+       loop:
+         - { name: 'user1', password: '$6$AAAAA' }
+         - { name: 'user2', password: '$6$AAAAA' }
+         
      - shell: sudo pdpl-user -i 63 user1
-
-     - name: add the user 
-       user:
-         name: user2
-         shell: /bin/bash
-         groups: astra-admin,astra-console	
-         password: $6$AAAAA
      - shell: sudo pdpl-user -i 63 user2
 
-#########################################################################################################################
      - block:
 
-        - name: add the user
-          user:
-            name: user3
-            shell: /bin/bash
-            groups: astra-admin,astra-console
-            password: $6$AAAAA
+       - name: add several users
+         ansible.builtin.user:
+           name: "{{ item.name }}"
+           shell: /bin/bash
+           groups: astra-admin,astra-console
+           password: "{{ item.password }}"
+         loop:
+           - { name: 'user3', password: '$6$AAAAA' }
+           - { name: 'user4', password: '$6$AAAAA' }
+           
         - shell: sudo pdpl-user -i 63 user3
-
-        - name: add the user
-          user:
-            name: user4
-            shell: /bin/bash
-            groups: astra-admin,astra-console
-            password: $6$AAAAA
         - shell: sudo pdpl-user -i 63 user4
 
        when: token1 == "yes"
-#########################################################################################################################
-     - block:
 
-        - name: add the user
-          user:
-            name: user5
-            shell: /bin/bash
-            groups: astra-admin,astra-console
-            password: $6$AAAAA
+     - block:
+     
+       - name: add several users
+         ansible.builtin.user:
+           name: "{{ item.name }}"
+           shell: /bin/bash
+           groups: astra-admin,astra-console
+           password: "{{ item.password }}"
+         loop:
+           - { name: 'user5', password: '$6$AAAAA' }
+           
         - shell: sudo pdpl-user -i 63 user5
 
        when: token1 == "yes" and token2 == "yes"
-#########################################################################################################################
 
     when: ansible_os_family == "Astra Linux (Smolensk)" or  ansible_os_family == "Astra Linux"
