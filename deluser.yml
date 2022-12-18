@@ -4,11 +4,12 @@
   become: yes
 
   tasks:
-  - name: del the user 
-    user: name=user1 state=absent remove=yes
-
-  - name: del the user
-    user: name=user2 state=absent remove=yes
-
-  - name: del the user
-    user: name=3 state=absent remove=yes
+  - name: del several user 
+    ansible.builtin.user:
+       name: "{{ item.name }}"
+       state: absent
+       remove: yes
+    loop:
+      - {name: 'user1' }
+      - {name: 'user2' }
+      - {name: 'user3' }
