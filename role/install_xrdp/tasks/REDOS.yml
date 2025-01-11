@@ -1,0 +1,90 @@
+---
+- name: RedOS 7.3 | Delete pakages for Cinnamon and delete global reposytory for yandex-browser
+  ansible.builtin.dnf:
+    name:
+      - cinnamon-control-center-filesystem
+      - cinnamon-desktop-gschemas-redos
+      - cinnamon-desktop-mimeapps
+      - cinnamon-gschemas-redos
+      - cinnamon-menus
+      - cinnamon-session-gschemas-redos
+      - cinnamon-settings-deamon-gschemas-redos
+      - cinnamon-translations
+      - yandex-browser-release
+    state: absent
+
+- name: RedOS 7.3 | Install GUI (Mate)
+  ansible.builtin.dnf:
+    name:
+      - '@mate-desktop'
+      - '@x11'
+      - vulkan-loader
+    state: present
+  register: mate_install_result
+
+- name: RedOS 7.3 | Create the symbolic link on graphical.target
+  ansible.builtin.file:
+    src: /usr/lib/systemd/system/graphical.target
+    dest: /etc/systemd/system/default.target
+    owner: root
+    group: root
+    state: link
+
+- name: RedOS 7.3 | Install XRDP
+  ansible.builtin.dnf:
+    name:
+      - xrdp
+      - xorgxrdp
+      - pulsaudio-module-xrdp
+    state: presetnt
+
+- name: RedOS 7.3 | Enable and start service xrdp
+  ansible.builtin.service:
+    name: xrdp
+    state: started
+    enabled: true
+
+- name: RedOS 7.3 | Configure preferred defaults graphical shell
+  ansible.builtin.lineinfile:
+    path: /etc/sysconfig/desktop
+    regexp: '^PREFERRED='
+    line: PREFERRED="$(type -p mate-session)"
+    owner: root
+    group: root
+    mode: '0600'
+    create: yes
+
+- name: RedOS 7.3 | Change param=Xorg
+  ansible.builtin.lineinfile:
+    path: /etc/xrdp/sesman.ini
+    regexp: '^param=Xorg'
+    line: param=/usr/libexec/Xorg
+
+- name: RedOS 7.3 | Activate Xorg and disactivate Xvnc
+  ansible.builtin.copy:
+    src: redos7_xrdp.ini
+    dest: /etc/xrdp/xrdp.ini
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart xrdp
+
+- name: RedOS 7.3 | The possibility of reconnection xrdp session
+  ansible.builtin.lineinfile:
+    path: /etc/X11/Xsession.d/99dbus-session
+    line: unset DBUS_SESSION_BUS_ADDRESS
+    owner: root
+    group: root
+    mode: '0600'
+    create: yes
+  notify:
+    - Restart xrdp
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  meta: flush_handlers
+
+- name: Reboot server after install GUI
+  when: mate_install_register.changed
+  ansible.builtin.reboot:
+  tags: reboot
