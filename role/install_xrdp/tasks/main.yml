@@ -1,0 +1,4 @@
+---
+- name: Install GUI, xrdp, yandex browser
+  include_tasks: "{{ ansible_os_family }}.yml"
+  when: ansible_os_family == 'Astra Linux' or ansible_os_family == 'REDOS'
